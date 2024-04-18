@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<root>
+        <MergeSubDirs>True</MergeSubDirs>
+        <PixelSize>0.68</PixelSize>
+		<ImagesPerDir>1000</ImagesPerDir>
+        <BayerPattern>RG</BayerPattern>
+        <ObjectsPerROI>5</ObjectsPerROI>
+        <EdgeThreshold>2.5</EdgeThreshold>
+        <MinObjectArea>100</MinObjectArea>
+        <Deconvolve>True</Deconvolve>
+        <UseJpeg>True</UseJpeg>
+        <SaveRawColor>True</SaveRawColor>
+        <RedGain>1.04</RedGain>
+        <GreenGain>1.10</GreenGain>
+        <BlueGain>0.9</BlueGain>
+        <Boost>1.40</Boost>
+</root>

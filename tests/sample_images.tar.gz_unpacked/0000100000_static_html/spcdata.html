@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>SPC Convert: 0000100000</title>
+        <!-- Bootstrap core CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <!-- Custom styles for this page -->
+        <link href="css/style.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <ul class="nav nav-pills">
+                <li><a id="app-name" class="navbar-brand" href="#">SPCConvert 1.0.1.05 :</a></li>
+                <li><a id="data-info" class="navbar-brand" href="#">0000100000, 7 images processed in 0 seconds.</a></li>
+                <li role="presentation" class="active"><a class="nav-pill" href="#images" aria-controls="images" role="tab" data-toggle="tab">Images</a></li>
+                <li role="presentation"><a class="nav-pill" href="#stats" aria-controls="stats" role="tab" data-toggle="tab">Stats</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <div class="progress">
+                        <div id="loading-progress" class="progress-bar progress-bar-primary progress-bar-striped" role="progressbar" aria-valuenow="0"
+                        aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                            Preparing images...
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div id="tabs" class="collapse">
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="images">
+                    <div id="image-tabs-status">
+                        <ul class="nav nav-pills">
+                            <li id='reallybig' role="presentation" class="active" data-toggle="tooltip" title="Show images from the camera in the
+                                range of 2mm and up" data-placement="right" onclick="updateMosaicImages()">
+                                <a class="nav-pill" href="#" role="tab" data-toggle="tab">> 60 um</a>
+                            </li>
+                            <li id='big' role="presentation" data-toggle="tooltip" title="Show images from the camera in the
+                                range of 1mm and up" data-placement="right" onclick="updateMosaicImages()">
+                                <a class="nav-pill" href="#" role="tab" data-toggle="tab">> 30 um</a>
+                            </li>
+                            <li id='small' role="presentation" data-toggle="tooltip" title="Show images from the camera in the
+                                range 1 mm and down" data-placement="right" onclick="updateMosaicImages()">
+                                <a class="nav-pill" href="#" role="tab" data-toggle="tab">< 30 um</a>
+                            </li>
+                            <li id='verysmall' role="presentation" data-toggle="tooltip" title="Show images from the camera in the
+                                range 0.5 mm and down" data-placement="right" onclick="updateMosaicImages()">
+                                <a class="nav-pill" href="#" role="tab" data-toggle="tab">< 15 um</a>
+                            </li>
+                            <li id='long' role="presentation" data-toggle="tooltip" title="Show images from the camera with aspect ratios between 0.0 and 0.1" data-placement="right" onclick="updateMosaicImages()">
+                                <a class="nav-pill" href="#" role="tab" data-toggle="tab">[0.0,0.1] Aspect</a>
+                            </li>
+                            <li id='round' role="presentation" data-toggle="tooltip" title="Show images from the camera with aspect ratios between 0.8 and 1.0" data-placement="right" onclick="updateMosaicImages()">
+                                <a class="nav-pill" href="#" role="tab" data-toggle="tab">[0.8,1.0] Aspect</a>
+                            </li>
+                        </ul>
+                        <ul class="nav nav-pills">
+                            <li id="SortByTime" role="presentation" class="active" data-toggle="tooltip" title="Sort images by timestamp" onclick="updateMosaicImages()" >
+                                <a class="nav-pill" href="#" role="tab" data-toggle="tab">Sort by timestamp</a>
+                            </li>
+                            <li id="SortByHeight" role="presentation" data-toggle="tooltip" title="Sort images by height desc" onclick="updateMosaicImages()" >
+                                <a class="nav-pill" href="#" role="tab" data-toggle="tab">Sort by height</a>
+                            </li>
+                            <li style="float:right;">
+                                <a id="info-text" href="#"></a>
+                                <a id="status-text" href="#"></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <br/>
+                    <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="00000">
+                                <div id="MosaicContainer"></div>
+                            </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="stats">
+                    <h4>General Info</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item">Recording Started: 2021-08-08 00:10:05</li>
+                        <li class="list-group-item">Total Images: 7</li>
+                        <li class="list-group-item">Duration: 1.9545559883117676 seconds</li>
+                        <li class="list-group-item">ROI Compression: 4021:1</li>
+                        <li class="list-group-item">ROIs per Second: 3.5813760474808376</li>
+                        <li class="list-group-item">kB per Second: 21</li>
+                    </ul>
+                    <h4>Table of Measurement Statistics</h4>
+                    <table id="stats" class="table table-condensed table-striped">
+                        <thead>
+                            <tr>
+                                <th>Measurement</th>
+                                    <th>Min</th>
+                                    <th>Max</th>
+                                    <th>Mean</th>
+                                    <th>Standard Deviation</th>
+                                    <th>Skewness</th>
+                                    <th>Kurtosis</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <tr>
+                                    <td>area</td>
+                                        <td>     0.000</td>
+                                        <td>     0.001</td>
+                                        <td>     0.000</td>
+                                        <td>     0.000</td>
+                                        <td>     0.824</td>
+                                        <td>    -0.623</td>
+                                </tr>
+                                <tr>
+                                    <td>major_axis_length</td>
+                                        <td>     0.018</td>
+                                        <td>     0.037</td>
+                                        <td>     0.026</td>
+                                        <td>     0.008</td>
+                                        <td>     0.073</td>
+                                        <td>    -1.532</td>
+                                </tr>
+                                <tr>
+                                    <td>minor_axis_length</td>
+                                        <td>     0.011</td>
+                                        <td>     0.026</td>
+                                        <td>     0.016</td>
+                                        <td>     0.006</td>
+                                        <td>     0.801</td>
+                                        <td>    -0.611</td>
+                                </tr>
+                                <tr>
+                                    <td>aspect_ratio</td>
+                                        <td>     0.350</td>
+                                        <td>     0.742</td>
+                                        <td>     0.627</td>
+                                        <td>     0.134</td>
+                                        <td>    -1.343</td>
+                                        <td>     0.673</td>
+                                </tr>
+                                <tr>
+                                    <td>elapsed_seconds</td>
+                                        <td>     0.000</td>
+                                        <td>     1.955</td>
+                                        <td>     1.264</td>
+                                        <td>     0.927</td>
+                                        <td>    -0.617</td>
+                                        <td>    -1.418</td>
+                                </tr>
+                                <tr>
+                                    <td>orientation</td>
+                                        <td>   -70.558</td>
+                                        <td>    68.678</td>
+                                        <td>   -14.721</td>
+                                        <td>    42.103</td>
+                                        <td>     0.964</td>
+                                        <td>     0.603</td>
+                                </tr>
+                                <tr>
+                                    <td>file_size</td>
+                                        <td>     2.682</td>
+                                        <td>    11.272</td>
+                                        <td>     5.968</td>
+                                        <td>     3.620</td>
+                                        <td>     0.564</td>
+                                        <td>    -1.291</td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="ImageDetail" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="ImageDetailTitle"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="ImageContainer">
+                            <div id="ScaleBar"></div>
+                            <img id="TargetImg" src="">
+                        </div>
+                        <div id="ImageInfo">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading"><h3 class="panel-title">Image Information</h3></div>
+                                <div class="panel-body">
+                                    <p></p>
+                                </div>
+                                <ul class="list-group">
+                                    <li id="ImageName" class="list-group-item"></li>
+                                    <li id="Timestamp" class="list-group-item"></li>
+                                    <li id="MajorAxisLength" class="list-group-item"></li>
+                                    <li id="MinorAxisLength" class="list-group-item"></li>
+                                    <li id="AspectRatio" class="list-group-item"></li>
+                                    <li id="Orientation" class="list-group-item"></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="DownloadImage" class="btn
+                            btn-default">Download</button>
+                        <button type="button" id="ShowImage" class="btn btn-default">Image</button>
+                            <button type="button" id="ShowRawColor" class="btn btn-default">Raw Color</button>
+                        <button type="button" id="ShowBinaryImage" class="btn btn-default">Binary Image</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            var res = 0.00062; // in mm/pixel
+            var image_ext = ".jpeg"; // .png or .jpeg
+        </script>
+
+        <script src="js/jquery-2.2.2.min.js"></script>
+        <script src="js/jquery.lazyload.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/spcconvert.js"></script>
+        <script src="js/taffy-min.js"></script>
+        <script src="js/database.js"></script>
+    </body>
+</html>
