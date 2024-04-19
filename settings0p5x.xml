@@ -8,9 +8,13 @@
         <EdgeThreshold>2.5</EdgeThreshold>
         <MinObjectArea>100</MinObjectArea>
         <Deconvolve>True</Deconvolve>
+        <DeconvolveMethod>lr</DeconvolveMethod>
+        <DeconvolveIterations>13</DeconvolveIterations>
+        <DeconvolveMaskWeight>0.7</DeconvolveMaskWeight>
         <UseJpeg>True</UseJpeg>
         <SaveRawColor>True</SaveRawColor>
-        <RedGain>1.06</RedGain>
+        <RedGain>0.95</RedGain>
         <GreenGain>1.08</GreenGain>
-        <BlueGain>0.95</BlueGain>
+        <BlueGain>1.03</BlueGain>
+        <Boost>1.3</Boost>
 </root>

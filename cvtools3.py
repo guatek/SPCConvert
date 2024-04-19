@@ -9,7 +9,7 @@ compatible with python 3.9.1
 import os
 from math import pi
 import cv2
-from skimage import morphology, measure, restoration
+from skimage import morphology, measure, restoration, color
 from skimage.filters import scharr, gaussian
 import numpy as np
 from scipy import ndimage
@@ -105,6 +105,9 @@ def quick_features(img,save_to_disk=False,abs_path='',file_prefix='',cfg = []):
         min_obj_area = cfg.get('MinObjectArea',100)
         objs_per_roi = cfg.get('ObjectsPerROI',1)
         deconv = cfg.get("Deconvolve").lower() == 'true'
+        deconv_method = cfg.get("DeconvolveMethod", 'um').lower()
+        deconv_iter = cfg.get("DeconvolveIterations",13)
+        deconv_mask_weight = cfg.get("DeconvolveMaskWeight",0.7)
         edge_thresh = cfg.get('EdgeThreshold',2.5)
         use_jpeg = cfg.get("UseJpeg").lower() == 'true'
         raw_color = cfg.get("SaveRawColor").lower() == 'true'
@@ -122,6 +125,9 @@ def quick_features(img,save_to_disk=False,abs_path='',file_prefix='',cfg = []):
         use_jpeg = False
         raw_color = True
         edge_thresh = 2.5
+        deconv_method = 'um'
+        deconv_iter = 13
+        deconv_mask_weight = 0.7
 
     # Define an empty dictionary to hold all features
     features = {}
@@ -259,13 +265,66 @@ def quick_features(img,save_to_disk=False,abs_path='',file_prefix='',cfg = []):
         img[:,:,i] = img[:,:,i] * gains[i] * boost 
         img[:,:,i] = np.clip(img[:,:,i],0,1)
 
+    #if deconv:
+
+        #img[img == 0] = 0.0001
+        #img[:,:,0] = restoration.richardson_lucy(img[:,:,0], psf, 7)
+        #img[:,:,1] = restoration.richardson_lucy(img[:,:,1], psf, 7)
+        #img[:,:,2] = restoration.richardson_lucy(img[:,:,2], psf, 7)
+
+       # Get the intesity image in HSV space
+    hsv_img = color.rgb2hsv(img)
+    v_img = hsv_img[:,:,2]
+
+    if deconv:
+        # unsharp mask before masking with binary image
+        if deconv_method.lower() == "um":
+
+            old_mean = np.mean(v_img)
+            blurd = gaussian(v_img,1.0)
+            hpfilt = v_img - blurd*deconv_mask_weight
+            v_img = hpfilt/(1-deconv_mask_weight)
+
+            new_mean = np.mean(v_img)
+
+            if (new_mean) != 0:
+                v_img = v_img*old_mean/new_mean
+
+
+            v_img[v_img > 1] = 1
+            v_img = np.uint8(255*v_img)
+
+    # mask the raw image with smoothed foreground mask
+    blurd_bw_img = gaussian(bw_img_all,3)
+    v_img = v_img*blurd_bw_img
+
+    # Make a guess of the PSF for sharpening
+    psf = make_gaussian(5, 3, center=None)
+
     if deconv:
 
-        img[img == 0] = 0.0001
-        img[:,:,0] = restoration.richardson_lucy(img[:,:,0], psf, 7)
-        img[:,:,1] = restoration.richardson_lucy(img[:,:,1], psf, 7)
-        img[:,:,2] = restoration.richardson_lucy(img[:,:,2], psf, 7)
+        v_img[v_img == 0] = 0.0001
 
+        if deconv_method.lower() == "lr":
+
+            v_img = restoration.richardson_lucy(v_img, psf, deconv_iter)
+
+            v_img[v_img < 0] = 0
+
+            if np.max(v_img) == 0:
+                v_img = np.uint8(255*v_img)
+            else:
+                v_img = np.uint8(255*v_img/np.max(v_img))
+
+
+
+    # restore the rbg image from hsv
+    hsv_img[:,:,2] = v_img
+    img = color.hsv2rgb(hsv_img)
+
+    features['image'] = img
+    features['binary'] = 255*bw_img_all
+    
     # Rescale image to uint8 0-255
     img_min = np.min(img)
     img_range = np.max(img)-img_min

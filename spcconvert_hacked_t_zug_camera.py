@@ -26,6 +26,9 @@ from scipy import stats
 import pandas
 from collections import OrderedDict
 
+from concurrent.futures import ThreadPoolExecutor
+
+
 def lmap(f, l):
     return list(map(f,l))
 
@@ -173,6 +176,7 @@ def run(data_path,cfg):
 
     image_list = []
     if cfg.get('MergeSubDirs',"false").lower() == "true":
+        print("Merging subdirs...")
         sub_directory_list = sorted(glob.glob(os.path.join(data_path,"[0-9]"*10)))
         for sub_directory in sub_directory_list:
             print ("Listing sub directory " + sub_directory + "...")
@@ -527,11 +531,12 @@ if __name__ == '__main__':
                             print ("Settings file: " + os.path.join(sys.path[0],'settings5p0x.xml'))
                         subdir_path = os.path.join(directory,data_subdir)
                         for tar_dir in glob.glob(os.path.join(subdir_path,'*.tar')):
-                            extracted_path = tar_dir + "_unpacked"
+                            print("extracting " + tar_dir)
+                            extracted_path = tar_dir[0:-4]
                             with tarfile.open(tar_dir) as archive:
-                                archive.extractall(path=extracted_path)
-                            data_path = extracted_path
-                            run(data_path,cfg)
+                                archive.extractall(path=subdir_path)
+                        data_path = subdir_path
+                        run(data_path,cfg)
 
 
 
